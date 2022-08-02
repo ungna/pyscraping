@@ -8,7 +8,7 @@
 
 1. 압축 파일(zip 파일) 다운로드
     - 아래 URL을 통해 압축 파일을 다운로드합니다.
-        - https://github.com/wikibook/pyscraping/archive/master.zip
+        - https://github.com/wikibook/pyscraping/archive/refs/heads/main.zip
 
 2. 압축 풀기
     - 다운로드한 압축 파일을 임의의 폴더에 풉니다.
