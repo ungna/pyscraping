@@ -2,7 +2,7 @@
 
 - 책 소개: https://wikibook.co.kr/pyscraping
 
-![book_cover_image](/book_cover_image.png)
+![book_cover_image](book_cover_image.jpg)
 
 **아래의 방법을 이용해 소스코드와 데이터를 내려받고 활용하세요. 그 밖의 자세한 사용법은 책의 『책 사용 설명서』 부분을 참고하세요.**
 
