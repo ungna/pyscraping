@@ -1,4 +1,5 @@
 # 파이썬 웹 스크레이핑 완벽 가이드
+**원본: https://github.com/wikibook/pyscraping**
 
 - 책 소개: https://wikibook.co.kr/pyscraping
 
