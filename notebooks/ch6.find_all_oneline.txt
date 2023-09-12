@@ -1,0 +1,14 @@
+# find_all()을 사용하면 list형식으로 뽑아져 나와서 text를 뽑아낼수 없음
+# soup.find_all('a').get_text() 하면 오류남
+# 반복문 for로 항목별로 get_text을 적용해 모든 a를 뽑아냄
+[x.get_text() for x in soup.find_all('a')]
+
+#%%
+# 위에꺼 분해해보기
+a_find_all = []  # append하기위한 빈 리스트
+
+for x in soup.find_all('a'):
+    print(x.get_text())  # 하나씩 잘 꺼내오는지 확인
+    a_find_all.append(x.get_text())
+    
+print(a_find_all)

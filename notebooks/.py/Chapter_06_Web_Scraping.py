@@ -22,7 +22,7 @@
 # In[ ]:
 
 
-get_ipython().run_cell_magic('writefile', 'C:\\myPyScraping\\data\\ch06\\HTML_example.html', '<!doctype html>\n<html>\n <head>\n  <meta charset="utf-8">\n  <title>이것은 HTML 예제</title>\n </head>\n <body>\n  <h1>출간된 책 정보</h1>\n  <p id="book_title">이해가 쏙쏙 되는 파이썬</p>\n  <p id="author">홍길동</p>\n  <p id="publisher">위키북스 출판사</p>\n  <p id="year">2018</p>\n </body>\n</html>\n')
+# get_ipython().run_cell_magic('writefile', 'C:\\myPyScraping\\data\\ch06\\HTML_example.html', '<!doctype html>\n<html>\n <head>\n  <meta charset="utf-8">\n  <title>이것은 HTML 예제</title>\n </head>\n <body>\n  <h1>출간된 책 정보</h1>\n  <p id="book_title">이해가 쏙쏙 되는 파이썬</p>\n  <p id="author">홍길동</p>\n  <p id="publisher">위키북스 출판사</p>\n  <p id="year">2018</p>\n </body>\n</html>\n')
 
 
 # [6장: 216페이지]
@@ -30,7 +30,7 @@ get_ipython().run_cell_magic('writefile', 'C:\\myPyScraping\\data\\ch06\\HTML_ex
 # In[ ]:
 
 
-get_ipython().run_cell_magic('writefile', 'C:/myPyScraping/data/ch06/HTML_example2.html', '<!doctype html>\n<html>\n <head>\n  <meta charset="utf-8">\n  <title>이것은 HTML 예제</title>\n </head>\n <body>\n  <h1>출간된 책 정보</h1>\n  <p>이해가 쏙쏙 되는 파이썬</p>\n  <p>홍길동</p>\n  <p>위키북스 출판사</p>\n  <p>2018</p>\n  </body>\n</html>\n')
+# get_ipython().run_cell_magic('writefile', 'C:/myPyScraping/data/ch06/HTML_example2.html', '<!doctype html>\n<html>\n <head>\n  <meta charset="utf-8">\n  <title>이것은 HTML 예제</title>\n </head>\n <body>\n  <h1>출간된 책 정보</h1>\n  <p>이해가 쏙쏙 되는 파이썬</p>\n  <p>홍길동</p>\n  <p>위키북스 출판사</p>\n  <p>2018</p>\n  </body>\n</html>\n')
 
 
 # ### 6.1.5 웹 페이지의 소스 가져오기
@@ -50,7 +50,7 @@ import requests
 
 r = requests.get("https://www.google.co.kr")
 r
-
+# <Response [200]>:  요청이 성공했음을 나타내는 응답코드
 
 # In[ ]:
 
@@ -62,12 +62,8 @@ r.status_code
 
 # In[ ]:
 
-
+# 가져온 내용 확인 
 r.text[0:100]
-
-
-# In[ ]:
-
 
 r.headers
 
@@ -81,14 +77,18 @@ html = requests.get("https://www.google.co.kr").text
 html[0:100]
 
 
+
+
+#%%
+# [웹 스크랩핑]
 # ### 6.1.6 웹 페이지의 소스 분석하고 처리하기
 
 # #### 데이터 찾고 추출하기
 
 # [6장: 222페이지]
 
-# In[ ]:
-
+# pip install beautifulsoup4  # 아나콘다 설치할때 같이됨
+# beautifulsoup4: screen-scrapping library
 
 from bs4 import BeautifulSoup
 
@@ -100,51 +100,54 @@ html = """<html><body><div><span>\
         </span></div></body></html>""" 
 
 # BeautifulSoup를 이용해 HTML 소스를 파싱
-soup = BeautifulSoup(html, 'lxml') 
-soup
+# 파싱(parsing): 큰 자료에서 내가 원하는 정보만 가공해서 추출해오는것
+# 파서(parser): 파싱을 하는 프로그램
+soup = BeautifulSoup(html, 'lxml')   # lxml은 파서의 한 종류
 
-
-# In[ ]:
-
-
+# 예쁘게 보기  # DOM 구조 형태로 출력
 print(soup.prettify())
 
 
+
+# In[ ]:
 # [6장: 224페이지]
 
-# In[ ]:
-
-
+# 첫번째 만나는 요소 a를 찾음
 soup.find('a')
 
-
-# In[ ]:
-
-
-soup.find('a').get_text()
+# 모든 a를 찾음
+soup.find_all('a') # 리스트 형식으로 나옴
 
 
-# In[ ]:
-
-
+#%%
+# a의 href 링크를 뽑아냄
 soup.find('a')['href'] # soup.find('a').get('href') 도 동일
 
-
-# [6장: 225페이지]
-
 # In[ ]:
 
+# a의 내용을 뽑아냄
+soup.find('a').get_text()
 
-soup.find_all('a')
-
-
-# In[ ]:
-
-
+#%% 
+# list형식으로 뽑아져 나와서 text를 뽑아낼수 없기 떄문에  # soup.find_all('a').get_text() 하면 오류남
+# 반복문 for로 항목별로 get_text을 적용해 모든 a를 뽑아냄
 [x.get_text() for x in soup.find_all('a')]
 
+#%%
+# 위에꺼 분해해보기
+a_find_all = []  # append하기위한 빈 리스트
+
+for x in soup.find_all('a'):
+    print(x.get_text())  # 하나씩 잘 꺼내오는지 확인
+    a_find_all.append(x.get_text())
+    
+print(a_find_all)
+
+
+
 
 # In[ ]:
+# [6장: 225페이지]
 
 
 from bs4 import BeautifulSoup
@@ -169,64 +172,51 @@ html2 = """
 </html>
 """ 
 
+# BeautifulSoup를 이용해 HTML 소스를 파싱
 soup2 = BeautifulSoup(html2, "lxml")
 
 
-# [6장: 226페이지]
-
 # In[ ]:
 
-
+# 요소를 속성처럼 접근해서 Element 객체를 사용
 soup2.title
-
-
-# In[ ]:
-
 
 soup2.body
 
 
+# In[ ]:
 # [6장: 227페이지]
 
-# In[ ]:
+soup2.title.text
 
+# In[ ]:
 
 soup2.body.h1
 
 
 # In[ ]:
 
-
+# 첫번쨰 p만 나옴
 soup2.p
 
 
 # In[ ]:
 
-
 soup2.find_all('p')
 
+# In[ ]:
 
 # [6장: 228페이지]
-
-# In[ ]:
-
-
+# 태그 p중에서 특정 속성지정  # 첫번째꺼만
 soup2.find('p', {"id":"book_title"})
-
-
-# In[ ]:
-
 
 soup2.find('p', {"id":"author"})
 
 
 # In[ ]:
 
-
+# p 중에서 모든 id:"~"속성을 찾음
 soup2.find_all('p', {"id":"book_title"})
-
-
-# In[ ]:
 
 
 soup2.find_all('p', {"id":"author"})
@@ -246,48 +236,68 @@ for book_title, author in zip(book_titles, authors):
     print(book_title.get_text() + '/' + author.get_text())
 
 
+#%%
+# 사용예시
+book_titles = soup2.find_all('p', {"id":"book_title"})
+authors = soup2.find_all('p', {"id":"author"})
+book_list = []
+
+for book_title, author in zip(book_titles, authors):
+    book_list.append((book_title.text, author.text))
+
+#%%
+# 한줄로 쓰기
+books = [(book_title.text, author.text) for book_title, author in zip(book_titles, authors)]
+
+
+
+# In[ ]:
 # [6장: 230페이지]
+## CSS를 통해서 찾기 - select, select_one 사용
+## select는 find와 반대
+## select == fina_all   select_one == find 
+
+html2 = """
+<html>
+ <head>
+  <title>작품과 작가 모음</title>
+ </head>
+ <body>
+  <h1>책 정보</h1>
+  <p id="book_title">토지</p>
+  <p id="author">박경리</p>
+  
+  <p id="book_title">태백산맥</p>
+  <p id="author">조정래</p>
+
+  <p id="book_title">감옥으로부터의 사색</p>
+  <p id="author">신영복</p>
+  </body>
+</html>
+""" 
+# BeautifulSoup를 이용해 HTML 소스를 파싱
+soup2 = BeautifulSoup(html2, "lxml")
+
+
+soup2.select_one('body p')  # body 내의 p 태그를 갖는 최초의 요소 찾기
+soup2.select_one('body p').text
 
 # In[ ]:
 
-
-soup2.select_one('body h1') # body 내의 h1 태그를 갖는 최초의 요소 찾기
-
-
-# In[ ]:
-
-
-soup2.select('body h1') # body 내의 h1 태그를 갖는 모든 요소 찾기 
+# 얘도 list형태라 .text로 꺼낼려면은 for문으로 꺼내야됨
+soup2.select('body p')  # body 내의 p 태그를 갖는 모든 요소 찾기
 
 
 # In[ ]:
 
-
-soup2.select_one('body p')
-
-
-# In[ ]:
-
-
-soup2.select('body p')
+soup2.select('p')  #  p 태그를 갖는 모든 요소 찾기
 
 
 # In[ ]:
-
-
-soup2.select('p')
-
-
 # [6장: 231페이지]
 
-# In[ ]:
-
-
+# id는 #으로 표시함  클래스는 .으로 표시함
 soup2.select('p#book_title')
-
-
-# In[ ]:
-
 
 soup2.select('p#author')
 
@@ -295,15 +305,16 @@ soup2.select('p#author')
 # In[ ]:
 
 
-get_ipython().run_cell_magic('writefile', 'C:/myPyScraping/data/ch06/HTML_example_my_site.html', '<!doctype html>\n<html>\n  <head>\n    <meta charset="utf-8">\n    <title>사이트 모음</title>\n  </head>\n  <body>\n    <p id="title"><b>자주 가는 사이트 모음</b></p>\n    <p id="contents">이곳은 자주 가는 사이트를 모아둔 곳입니다.</p>\n    <a href="http://www.naver.com" class="portal" id="naver">네이버</a> <br>\n    <a href="https://www.google.com" class="search" id="google">구글</a> <br>\n    <a href="http://www.daum.net" class="portal" id="daum">다음</a> <br>\n    <a href="http://www.nl.go.kr" class="government" id="nl">국립중앙도서관</a>\n  </body>\n</html>\n')
+# get_ipython().run_cell_magic('writefile', 'C:/myPyScraping/data/ch06/HTML_example_my_site.html', '<!doctype html>\n<html>\n  <head>\n    <meta charset="utf-8">\n    <title>사이트 모음</title>\n  </head>\n  <body>\n    <p id="title"><b>자주 가는 사이트 모음</b></p>\n    <p id="contents">이곳은 자주 가는 사이트를 모아둔 곳입니다.</p>\n    <a href="http://www.naver.com" class="portal" id="naver">네이버</a> <br>\n    <a href="https://www.google.com" class="search" id="google">구글</a> <br>\n    <a href="http://www.daum.net" class="portal" id="daum">다음</a> <br>\n    <a href="http://www.nl.go.kr" class="government" id="nl">국립중앙도서관</a>\n  </body>\n</html>\n')
 
 
 # [6장: 232페이지]
 
 # In[ ]:
 
-
-f = open('C:/myPyScraping/data/ch06/HTML_example_my_site.html', encoding='utf-8')
+# open으로 직접적으로 html파일을 읽어서 적용
+# 상대경로로 설정
+f = open('../../data/ch06/HTML_example_my_site.html', encoding='utf-8')
 
 html3 = f.read()
 f.close()
@@ -312,57 +323,32 @@ soup3 = BeautifulSoup(html3, "lxml")
 
 
 # In[ ]:
-
-
+# select, find_all
 soup3.select('a')
+soup3.find_all('a')
 
+#%%
 
-# [6장: 233페이지]
-
-# In[ ]:
-
-
+# 클래스 속성을 가진 요소들 선택
 soup3.select('a.portal')
-
+soup3.find_all('a', {"class":"portal"})
 
 # In[ ]:
 
-
+# 둘다됨
 soup3.select_one('a').get_text()
 
+soup3.select_one('a').text
 
 # In[ ]:
 
-
+# for사용
 [x.get_text() for x in soup3.select('a')]
 
 
+# In[ ]:
+
 # #### 웹 브라우저의 요소 검사
-
-# [6장: 235페이지]
-
-# In[ ]:
-
-
-soup3.select('a')
-
-
-# In[ ]:
-
-
-soup3.select('a.portal')
-
-
-# [6장: 236페이지]
-
-# In[ ]:
-
-
-soup3.select('a#naver')
-
-
-# In[ ]:
-
 
 soup3.select('a#naver.portal')
 
@@ -373,13 +359,13 @@ soup3.select('a#naver.portal')
 soup3.select('a.portal#naver')
 
 
+
+
+# In[ ]:
 # ### 6.1.7 웹 사이트 주소에 부가 정보 추가하기
 
 # #### 웹 사이트 주소에 경로 추가하기
-
 # [6장: 237페이지]
-
-# In[ ]:
 
 
 base_url = "https://api.github.com/"
@@ -402,12 +388,12 @@ for sub_dir in sub_dirs:
     print(r.url)
 
 
+
+
+# In[ ]:
 # #### 웹 사이트 주소에 매개변수 추가하기
 
 # [6장: 238페이지]
-
-# In[ ]:
-
 
 import requests
 
@@ -415,7 +401,7 @@ where_value = 'nexearch'
 sm_value = 'top_hty'
 fbm_value = 1
 ie_value = 'utf8'
-query_value = 'python'
+query_value = 'python'  # 여기만 바꿔서 검색내용 변경
 
 base_url = "https://search.naver.com/search.naver"
 parameter = "?where={0}&sm={1}&fbm={2}&ie={3}&query={4}".format(where_value, sm_value, fbm_value, ie_value, query_value)
@@ -444,6 +430,9 @@ r = requests.get(url, params=parameters)
 print(r.url)
 
 
+
+
+# In[ ]:
 # ## 6.2 웹 사이트에서 데이터 가져오기
 
 # ### 6.2.1 날씨 정보 가져오기
@@ -451,9 +440,6 @@ print(r.url)
 # #### 웹 사이트 분석해 날씨 정보 가져오기
 
 # [6장: 241페이지]
-
-# In[ ]:
-
 
 import requests  
 from bs4 import BeautifulSoup 
@@ -463,8 +449,8 @@ search_query = location + " 날씨"
 search_url = "https://search.daum.net/search?w=tot&DA=YZR&t__nil_searchbox=btn&sug=&sugo=&sq=&o=&q="
 url = search_url + search_query
 
-html_weather = requests.get(url).text
-soup_weather = BeautifulSoup(html_weather, "lxml")
+html_weather = requests.get(url).text  # request해서 결과를 받아옴
+soup_weather = BeautifulSoup(html_weather, "lxml")  # 받아온거를 파싱함
 print(url)
 
 
@@ -473,7 +459,7 @@ print(url)
 # In[ ]:
 
 
-txt_temp = soup_weather.select_one('strong.txt_temp').get_text()
+txt_temp = soup_weather.select_one('strong.txt_temp').get_text()  # 텍스트만 저장
 txt_temp
 
 
@@ -496,13 +482,16 @@ dl_weather_dds
 # In[ ]:
 
 
+# dl_weather_dds_text = [x.get_text() for x in dl_weather_dds]
+# [wind_speed, humidity, pm10] = dl_weather_dds_text
+
 [wind_speed, humidity, pm10] = [x.get_text() for x in dl_weather_dds]
 
 print(f"현재 풍속: {wind_speed}, 현재 습도: {humidity}, 미세 먼지: {pm10}")
 
 
 # In[ ]:
-
+# 위에서 한거 다 합쳐서 함수로 만듬
 
 import requests  
 from bs4 import BeautifulSoup 
@@ -547,13 +536,17 @@ print(f"- 기온: {txt_temp}")
 print(f"- 날씨 정보: {txt_weather} ", )
 print(f"- 현재 풍속: {wind_speed}, 현재 습도: {humidity}, 미세 먼지: {pm10}")
 
+#%%
 
-# #### 날씨 정보 주기적으로 가져오기
-
-# [6장: 245페이지]
+from datetime import datetime
+now = datetime.now()
+print(now)
+print("[작업 수행 시각] {:%H:%M:%S}".format(now))
 
 # In[ ]:
 
+# #### 날씨 정보 주기적으로 가져오기
+# [6장: 245페이지]
 
 import schedule
 import time
@@ -573,32 +566,36 @@ def job():
     print(f"- 날씨 정보: {txt_weather} ", )
     print(f"- 현재 풍속: {wind_speed}, 현재 습도: {humidity}, 미세 먼지: {pm10}")
 
+# 작업 등록
 # 코드 테스트를 위해 5초마다 날씨 정보 가져와 출력하기 위한 스케줄 설정
 schedule.every(5).seconds.do(job)  # 5초(second)마다 job() 함수 실행
 
+
+#%%
 # -- 매일 지정한 시각에 날씨 정보를 가져와 출력하기 위한 스케줄 설정
 # schedule.every().day.at("07:00").do(job) # 매일 07시에 job() 함수 실행
 # schedule.every().day.at("12:00").do(job) # 매일 12시에 job() 함수 실행
 # schedule.every().day.at("18:00").do(job) # 매일 18시에 job() 함수 실행
+print("run pending...")
 
 while True:
     try:
-        schedule.run_pending()
-        time.sleep(1)
+        schedule.run_pending() # 등록한작업 실행 및 기다림
+        time.sleep(1)      # 1초 대기
     except:
         print("작업 강제 종료")
         schedule.clear()  # 기본 스케줄러 객체를 제거          
         break            # while 문을 빠져 나옴
 
+print("END")
 
+
+
+# In[ ]:
 # ### 6.2.2 주식 정보 가져오기
-
 # #### 주식 현재가 가져오기
 
 # [6장: 248페이지]
-
-# In[ ]:
-
 
 import requests
 from bs4 import BeautifulSoup
@@ -619,17 +616,26 @@ print(url)
 
 
 soup.select_one('p.no_today')
-
+"""
+<p class="no_today">
+<em class="no_down">
+<span class="blind">70,500</span>
+<span class="no7">7</span><span class="no0">0</span><span class="shim">,</span><span class="no5">5</span><span class="no0">0</span><span class="no0">0</span>
+</em>
+</p>
+"""
 
 # In[ ]:
 
 
 stock_price = soup.select_one('p.no_today span.blind').get_text()
+# p.no_today span.blind = p.no_today 안에있는 span.blind
 stock_price
 
 
 # In[ ]:
 
+# 함수화
 
 import requests
 from bs4 import BeautifulSoup
@@ -658,41 +664,48 @@ current_stock_price
 
 
 # In[ ]:
-
+# 종목코드를 여러개 넣음
 
 company_stock_codes = {"삼성전자": "005930", "현대차":"005380", "NAVER":"035420"}
 
 print("[현재 주식 가격(원)]")
-for company, stock_code in company_stock_codes.items():
-    current_stock_price = get_current_stock_price(stock_code)
+for company, stock_code in company_stock_codes.items():   # dict 데이터타입이라서 나눠서 넣음
+    current_stock_price = get_current_stock_price(stock_code)  # 코드넣어서 하나씩 뽑아냄
     print(f"{company}: {current_stock_price}")
 
 
+
+
+# In[ ]:
 # #### 주식 종목 코드 가져오기
 
 # [6장: 252페이지]
 
-# In[ ]:
-
-
 import pandas as pd
+from IPython.display import display
 
 # 한국 거래소(KRX)에서 전체 상장법인 목록 가져오기
 base_url = "http://kind.krx.co.kr/corpgeneral/corpList.do"
 method = "download"
 url = "{0}?method={1}".format(base_url, method)
 
-df = pd.read_html(url, header=0)[0]
+# 사이트에서 바로 읽지를 못해서 다운하고 read_excel로
+# df = pd.read_html(url, header=0, encoding="cp949")[0]   # list
+df = pd.read_excel("../../data/ch06/상장법인목록.xlsx", engine='openpyxl')
 
+
+#%%
+# list를 dataframe으로 바꾸는거 
+# read_excel헀으면 굳이 안해도 되는듯 
 with pd.option_context('display.max_columns',4): # 최대 4개까지 열이 표시하도록 설정
     pd.set_option("show_dimensions", False)      # 행과 열 개수 출력 안 하기
-    display(df.head())
+    print(df.head(10))
 
 
 # In[ ]:
 
 
-df['종목코드']= df['종목코드'].apply(lambda x: f"{x:06d}")
+df['종목코드']= df['종목코드'].apply(lambda x: f"{x:06d}") # 6자리수로 강제 ex) 123 -> 000123
 
 with pd.option_context('display.max_columns',4): # 최대 4개까지 열이 표시하도록 설정
     pd.set_option("show_dimensions", False)      # 행과 열 개수 출력 안 하기
@@ -728,7 +741,7 @@ def get_stock_info(maket_type=None):
         marketType = ""
     url = "{0}?method={1}&marketType={2}".format(base_url, method, marketType)
 
-    df = pd.read_html(url, header=0)[0]
+    df = pd.read_html(url, header=0, encoding='cp949')[0]
     
     # 종목코드 열을 6자리 숫자로 표시된 문자열로 변환
     df['종목코드']= df['종목코드'].apply(lambda x: f"{x:06d}") 
@@ -737,7 +750,6 @@ def get_stock_info(maket_type=None):
     df = df[['회사명','종목코드']]
     
     return df
-
 
 # In[ ]:
 
@@ -810,11 +822,9 @@ for company_name in company_names:
     print(f"{company_name}: {current_stock_price}")
 
 
-# [6장: 257페이지]
-
 # In[ ]:
 
-
+# [6장: 257페이지]
 get_stock_code('CJ 바이오사이언스', 'kosdaq') # 주식 종목 코드 가져오기, 코스닥(kosdaq) 지정
 
 
@@ -824,20 +834,21 @@ get_stock_code('CJ 바이오사이언스', 'kosdaq') # 주식 종목 코드 가�
 get_stock_code('CJ 바이오사이언스') # 주식 종목 코드 가져오기, 주식 종류는 지정 안 함
 
 
-# ### 6.2.3 환율 정보 가져오기
 
-# #### 현재의 환율 정보 가져오기
-
-# [6장: 259페이지]
 
 # In[ ]:
 
+# ### 6.2.3 환율 정보 가져오기
+# #### 현재의 환율 정보 가져오기
+
+# [6장: 259페이지]
 
 import pandas as pd
 
 url = 'https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=1&ie=utf8&query=%ED%99%98%EC%9C%A8'
 
 # url에서 표 데이터를 추출해 DataFrame 데이터의 리스트로 반환
+# 웹스크입트가 자바로 되있으면 못가지고옴
 dfs = pd.read_html(url)
 dfs
 
@@ -874,18 +885,18 @@ import pandas as pd
 # 네이버 금융의 환율 정보 웹 사이트 주소
 url = 'https://finance.naver.com/marketindex/exchangeList.nhn' 
 
-# 웹 사이트의 표 데이터에서 두 번째 줄을 DataFrame 데이터의 columns로 선택
-dfs = pd.read_html(url, header=1) 
+# header = 1: 웹 사이트의 표 데이터에서 두 번째 줄을 DataFrame 데이터의 columns로 선택
+dfs = pd.read_html(url, header=1, encoding ="euc-kr") 
 
 dfs[0].head() # 전체 데이터 중 앞의 일부분만 표시
 
 
-# #### 과거의 환율 정보 가져오기
-
-# [6장: 264페이지]
 
 # In[ ]:
 
+# #### 과거의 환율 정보 가져오기
+
+# [6장: 264페이지]
 
 import pandas as pd
 
@@ -1012,7 +1023,7 @@ def split_title_to_rates(df_org):
     df_new[regions] = df_temp # 전국, 서울, 수도권 순서대로 DataFrame 데이터에 할당
 
     return df_new[['등록일'] + regions + ['번호']] # DataFrame에서 필요한 열만 반환
-
+    # return df_new[['등록일', '전국', '서울', '수도권 ,'번호']]  # 이렇게도 가능
 
 # [6장: 271페이지]
 
@@ -1041,11 +1052,11 @@ for page_num in range(1, last_page_num+1):
     df_page = dfs[0] # 리스트의 첫 번째 항목에 동향 보고서 제목 데이터가 있음
     df_rate = split_title_to_rates(df_page)
     
-    # 세로 방향으로 연결 (기존 index를 무시)
+    # concat = array형식의 데이터를 연결 => 세로로 연결 한다는 뜻(기존 index를 무시)
     df_rates = pd.concat([df_rates, df_rate], ignore_index=True) 
 
 # 최신 데이터와 과거 데이터의 순서를 바꿈. index도 초기화함  
-df_rates = df_rates[::-1].reset_index(drop=True)
+df_rates = df_rates[::-1].reset_index(drop=True) # False하면은 인덱스열이 생김
 df_rates.head() # 앞의 일부만 출력
 
 # 행과 열의 최대 표시 개수를 임시로 설정
@@ -1057,7 +1068,7 @@ with pd.option_context('display.max_rows',4, 'display.max_columns',6):
 # [6장: 273페이지]
 
 # In[ ]:
-
+## 그래프 만들기
 
 import matplotlib as mpl
 
@@ -1068,40 +1079,64 @@ mpl.rcParams['axes.unicode_minus'] = False # 마이너스(-) 폰트 깨짐 방�
 # In[ ]:
 
 
-get_ipython().run_line_magic('matplotlib', 'inline')
-
-
-# In[ ]:
-
-
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df_rates.tail(40).plot(x='등록일', y=['전국', '서울', '수도권'], 
-                       figsize=(10, 8), subplots=True, layout=(3,1),
-                       style = '-o', grid=True) # 그래프 그리기
+# tail(40) : 뒤에있는 자료 40개
+df_rates.tail(40).plot(x='등록일', y=['전국', '서울', '수도권'],     # subplots: 한번에 여러 그래프 그리기 
+                       figsize=(10, 8), subplots=True, layout=(3,1), # figsize: 그래프 크기설정
+                       style = '-o', grid=True) # 그래프 그리기    # style 밑에 참조
 plt.show()
 
+""" style
+character description
+'-'       solid line style
+'--'      dashed line style
+'-.'      dash-dot line style
+':'       dotted line style
+'.'       point marker
+','       pixel marker
+'o'       circle marker
+'v'       triangle_down marker
+'^'       triangle_up marker
+'<'       triangle_left marker
+'>'       triangle_right marker
+'1'       tri_down marker
+'2'       tri_up marker
+'3'       tri_left marker
+'4'       tri_right marker
+'s'       square marker
+'p'       pentagon marker
+'*'       star marker
+'h'       hexagon1 marker
+'H'       hexagon2 marker
+'+'       plus marker
+'x'       x marker
+'D'       diamond marker
+'d'       thin_diamond marker
+'|'       vline marker
+'_'       hline marker
+"""
+
+# In[ ]:
 
 # ### 6.2.5 웹 페이지에서 이미지 가져오기
 
 # [6장: 275페이지]
-
-# In[ ]:
 
 
 import requests  
 
 image_url = 'https://www.python.org/static/img/python-logo.png' # 이미지 링크(주소)
 r = requests.get(image_url) # 이미지 주소의 HTTP 응답 객체
-r
+r   # <Response [200]>  # 연결 잘 됬다는 뜻
 
 
 # [6장: 276페이지]
 
 # In[ ]:
 
-
+# https://www.python.org/static/img/python-logo.png' 에서 뒤부분 python-logo.png만 가지고옴
 file_name = image_url.split("/")[-1]
 file_name
 
@@ -1111,7 +1146,8 @@ file_name
 
 from pathlib import Path
 
-download_folder = 'C:/myPyScraping/data/ch06/download' 
+# 경로설정할때 현위치(file)잘 확인하고 돌려야 상대경로 먹힘
+download_folder = '../../data/ch06/download' 
 image_dir_path = Path(download_folder)
 
 if not image_dir_path.exists():
@@ -1137,6 +1173,7 @@ image_path
 r = requests.get(image_url) # 이미지 주소의 HTTP 응답 객체
 image_data = r.content # 응답 객체(r)을 이용해 받은 이미지 데이터
 
+# mode는 write, 바이너리 파일 모드를 지정하기위해 wb로 설정
 with open(image_path, 'wb') as f:
     f.write(image_data)
 
@@ -1151,7 +1188,7 @@ from pathlib import Path
 image_url = "https://images.unsplash.com/photo-1645956734658-8b6e62e7d35a"
   
 file_name = image_url.split("/")[-1] + ".jpg" # 파일 이름 생성(확장자 추가)
-download_folder = 'C:/myPyScraping/data/ch06/download' # 다운로드 폴더 지정
+download_folder = '../../data/ch06/download' # 다운로드 폴더 지정 
 
 # 지정한 다운로드 폴더를 생성하지 않았으면 생성
 image_dir_path = Path(download_folder)
@@ -1169,5 +1206,3 @@ if r.status_code == 200:
 else:
     print("- 지정한 이미지 링크의 응답이 없습니다.")
 
-
-# ## 6.3 정리
