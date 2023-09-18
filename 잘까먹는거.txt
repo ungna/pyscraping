@@ -1,0 +1,16 @@
+# html에서 테이블만 뽑아오기
+
+url = "https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_by_population"
+df = pd.read_html(url, header=0)
+
+df = df[0]
+
+
+# columns 이름바꾸기
+df.rename(columns={'Unnamed: 0' : 'No.'}, inplace = True)
+
+# 특정 columns만 뽑아오기: 2가지 방법
+df_cut = df.loc[:, 'No.' : '% of world']
+df_cut2 = df.iloc[:, 0:4]
+
+
