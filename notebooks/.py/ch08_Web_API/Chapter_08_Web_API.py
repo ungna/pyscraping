@@ -100,17 +100,17 @@ dict_data['취미'][0]
 import requests  
 import json
 
-url = "https://timeapi.io/api/TimeZone/AvailableTimeZones"
+# 가지고올 수 있는 시간대
+url = "https://timeapi.io/api/TimeZone/AvailableTimeZones"  
 
 r = requests.get(url)
 r.text[:70] # 문자열 중 앞의 일부만 출력
 # r.text    # 문자열 전체를 출력
+rt = r.text   # type 이 str로 전체가 하나의 str로 되있음
 
-
-# [8장: 346페이지]
 
 # In[ ]:
-
+# [8장: 346페이지]
 
 import requests  
 import json
